@@ -1,8 +1,9 @@
 %include "io.inc"
 
 section .data
-    calc db "403 408 + 917 853 - 568 791 + 692 322 + + + 8", 0
+    calc db "$ 2 10", 0
     size EQU $-calc
+    ten dd 10
 
 section .text
 global CMAIN
@@ -19,11 +20,12 @@ CMAIN:
     ; Nao contar o \0
     dec ecx
     rep lodsb
-    movsx eax, al
-    PRINT_CHAR eax
+    std 
+    sub esi, 1
+    mov ecx, size
+    sub ecx, 1
     ; Para pegar os numeros
     mov ebx, 10
-
     input:
         cmp ecx, 0
         je END
@@ -49,23 +51,38 @@ CMAIN:
     pop eax
     PRINT_DEC 4, eax
     ret
-   
+
 GET_NUM:
+    mov ebx, 0
     sub eax, '0'
-    INCREMENT: 
+    push ecx
+    INCREMENT:
+        pop ecx
         dec ecx
         push eax
         lodsb
         movsx eax, al
         mov edx, eax
         pop eax
-        cmp edx, ' '
-        je SAVE_NUM
-        push edx
-        mul ebx
-        pop edx
-        sub edx, '0'
-        add eax, edx
+        push ecx
+        mov ecx, edx
+        cmp ecx, ' '
+        je RESTORE_EX
+        inc ebx
+        sub ecx, '0'
+        xchg ecx, eax
+        push ebx
+        MULTIPLY:
+            dec ebx
+            push ebx
+            mov ebx, 10
+            mul ebx
+            pop ebx
+            cmp ebx, 0
+            jg MULTIPLY
+        pop ebx
+        xchg ecx, eax
+        add eax, ecx
         jmp INCREMENT
 
 SAVE_NUM:
@@ -74,20 +91,20 @@ SAVE_NUM:
     jmp input
     
 ADD_NUM:
-    pop eax
     pop edx
+    pop eax
     add eax, edx
     jmp SAVE_NUM
     
 SUB_NUM:
-    pop edx
     pop eax
+    pop edx
     sub eax, edx
     jmp SAVE_NUM
     
 MUL_NUM:
-    pop eax
     pop edx
+    pop eax
     mul edx
     jmp SAVE_NUM
     
@@ -99,20 +116,23 @@ DIV_NUM:
     pop eax
     push edx
     mov edx, 0
+    xchg ecx, eax
     div ecx
     pop ecx
     jmp SAVE_NUM
     
+;TODO
 EXP_NUM:
     pop ebx
     pop eax
+    xchg ebx, eax
     push ecx
     mov ecx, eax
     cmp ebx, 0
     je EXP_ZERO
     LOOP_EXP:
         cmp ebx, 1
-        je RESTORE_ECX
+        je RESTORE_EX
         mul ecx
         dec ebx
         jmp LOOP_EXP
@@ -120,6 +140,6 @@ EXP_NUM:
         mov eax, 1
         jmp SAVE_NUM
         
-RESTORE_ECX:
+RESTORE_EX:
     pop ecx
     jmp SAVE_NUM
