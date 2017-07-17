@@ -137,14 +137,15 @@ float tangente(float n) {
     return resultado;
 }
 
-float arcsen(float n){
+float arccos(float n){
     float resultado;
     asm(
-    "fld %1;"
+    		"fld %1;"
+    		"fld %1;"
             "fmulp;"
             "fld %1;"
             "fld1;"
-            "fsubrp;"
+            "fsubp;"
             "fdivp;"
             "fsqrt;"
             "fld1;"
@@ -156,14 +157,15 @@ float arcsen(float n){
     return resultado * ((180.0) / PI);
 }
 
-float arccos(float n){
+float arcsen(float n){
     float resultado;
     asm(
-    "fld %1;"
+    		"fld %1;"
+    		"fld %1;"
             "fmulp;"
             "fld %1;"
             "fld1;"
-            "fsubrp;"
+            "fsubp;"
             "fdivrp;"
             "fsqrt;"
             "fld1;"
