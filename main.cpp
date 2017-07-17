@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -48,10 +47,12 @@ float absoluto(float n){
 float loge(float n){
     float resultado;
     asm(
-    "fld %1;"
+    		"fld %1;"
             "fld1;"
+            "fxch;"
             "fyl2x;"
             "fldl2e;"
+            "fxch;"
             "fdivp;"
             "fstp %0;"
     : "=m" (resultado)
@@ -240,161 +241,178 @@ float calcatan(float a){
 int main() {
     float a = 1;
     double timeC, timeAsm;
-    system("cls");
     // --------------------------------------------------------------------------------
     // ABS
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         absoluto(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calcabs(a);
+        timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
     printf("Cálculo de valor absoluto\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
     // --------------------------------------------------------------------------------
     // SQRT
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calcsqrt(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         raiz(a);
+    	timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
     printf("Cálculo de raiz quadrada\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
     // --------------------------------------------------------------------------------
     // LOG
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calclog(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         loge(a);
+        timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
+    
     printf("Cálculo de logaritmo\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
     // --------------------------------------------------------------------------------
     // SENO
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calcsin(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         seno(a);
+    	timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
     printf("Cálculo de seno\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
     // --------------------------------------------------------------------------------
     // COS
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calccos(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         cosseno(a);
+    	timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
     printf("Cálculo de cosseno\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
     // --------------------------------------------------------------------------------
     // Tangente
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calctan(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         tangente(a);
+    	timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
     printf("Cálculo de tangente\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
     // --------------------------------------------------------------------------------
     // arcsen
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calcasin(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         arcsen(a);
+    	timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
     printf("Cálculo de arco seno\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
     // --------------------------------------------------------------------------------
     // arccos
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calcacos(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         arccos(a);
+    	timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
     printf("Cálculo de arco cosseno\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
     // --------------------------------------------------------------------------------
     // arctg
     // C
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeC = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         calcatan(a);
+        timeC += GetCounter();
     }
-    timeC = GetCounter();
     // ASM
-    StartCounter();
-    for(int i = 0; i < 10000000; i++) {
+    timeAsm = 0;
+    for(int i = 0; i < 1000000; i++) {
+    	StartCounter();
         arctg(a);
+    	timeAsm += GetCounter();
     }
-    timeAsm = GetCounter();
     printf("Cálculo de arco tangente\n");
     printf("Tempo em C = %lf, Tempo em Assembly = %lf \n", timeC, timeAsm);
     printf("Ganho de perfomance de %lf vezes\n\n", timeC/timeAsm);
 
     return 0;
 }
-
