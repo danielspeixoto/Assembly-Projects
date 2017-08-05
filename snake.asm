@@ -67,6 +67,8 @@
 ;;                                                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; Variáveis globais, auxiliam  na identificação de
+; comandos e de estados
 %DEFINE EMPTY 0b0000_0000
 %DEFINE SNAKE 0b0000_0001
 %DEFINE FRUIT 0b0000_0010
@@ -84,6 +86,8 @@
 %define rand word [es:1032]
 
 
+; Realiza a incialização com os valores adequados
+; para cada registrador
 init:
 	.segments:
 		mov ax, 0x07C0
@@ -116,7 +120,7 @@ main:
 
 ;; () -> (ax); ax,cx,dx
 random:
-	; Gera um valor aleatório valído pra a posição da fruta
+	; Gera uma posição aleatória valída no mapa do jogo
 	mov ax, rand
 	mov dx, 7993
 	mov cx, 9781
@@ -158,9 +162,12 @@ movement:
 
 
 keyboard:
+	; Recebe a entrada do teclado e faz o processamento
 	in al, 0x60
 	mov bx, head
 	mov ah, map(bx)
+	; Verifia se o espaço foi pressionado e permite
+	; a reinicialização do jogo
 	cmp al, 0x39
 	jne $+12
 	mov cx, 1032
@@ -168,21 +175,21 @@ keyboard:
 	mov di, 0
 	rep stosb
 	and ah, 0x0F
+	; Verifica se a tecla pra cima foi pressionada
 	cmp al, 0x48
 	jne $+5
-	; Verifica se a tecla pra cima foi pressionada
 	or ah, DIRUP
+	; Verifica se a tecla pra baixo foi pressionada
 	cmp al, 0x50
 	jne $+5
-	; Verifica se a tecla pra baixo foi pressionada
 	or ah, DIRDO
+	; Verifica se a tecla pra esquerda foi pressionada
 	cmp al, 0x4b
 	jne $+5
-	; Verifica se a tecla pra esquerda foi pressionada
 	or ah, DIRLE
+	; Verifica se a tecla pra direita foi pressionada
 	cmp al, 0x4d
 	jne $+5
-	; Verifica se a tecla pra direita foi pressionada
 	or ah, DIRRI
 	test ah, 0xF0
 	jz $+4
@@ -199,12 +206,13 @@ timer:
 		call movement
 		mov ah, map(di)
 		mov al, map(si)
+		; Verifica se houve colisão
 		test al, WRECK
 		jz $+3
 		iret
+		; Faz a cobra parar no jogo quando bate
 		test ah, SNAKE|EATEN
 		jz $+7
-		; Verifica se a cobra se bateu, e para o jogo
 		mov map(si), WRECK
 		iret
 		; Faz a cobrinha crescer sempre que come uma fruta
@@ -215,6 +223,7 @@ timer:
 		mov bl, EATEN
 		jmp $+4
 		mov bl, SNAKE
+		; Faz a pintura na tela
 		and al, 0xF0
 		or bl, al
 		mov map(di), bl
@@ -226,9 +235,12 @@ timer:
 		mov al, map(si)
 		test al, SNAKE
 		jz $+11
+		; Faz a cauda sair do lugar
 		mov map(si), EMPTY
+		; Apaga o caminho por onde a cauda passou
 		mov tail, di
 		jnz $+9
+		; Faz a pintura na tela
 		and al, 0xF0
 		or al, SNAKE
 		mov map(si), al
